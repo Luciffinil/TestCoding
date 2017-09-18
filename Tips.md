@@ -16,3 +16,30 @@ public int[] twoSum(int[] numbers, int target) {
 ```
 
 # 2 自定义ListNode 的用法
+
+例如：Add Two Numbers
+```Java
+class Solution {
+	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+		ListNode res = new ListNode(0);
+		ListNode p = l1, q = l2, cur = res;                 // 遍历时一定要用一个新的LishNode，否则如果执行 l1 = l1.next;
+		int jw = 0;                                         // 循环结束后，l1就变成了只有一个节点的链表
+		while (p != null || q != null) {
+			int v1 = (p != null) ? p.val : 0;
+			int v2 = (q != null) ? q.val : 0;
+			int v = v1 + v2 + jw;
+			cur.next = new ListNode(v % 10);
+			cur = cur.next;
+			jw = v / 10;
+			if (p != null)
+				p = p.next;
+			if (q != null)
+				q = q.next;
+		}
+		if (jw > 0) { // 最后一位也有可能需要进位
+			cur.next = new ListNode(jw);
+		}
+		return res.next;
+	}
+}
+```
