@@ -28,8 +28,8 @@ class Solution {
 			int v1 = (p != null) ? p.val : 0;
 			int v2 = (q != null) ? q.val : 0;
 			int v = v1 + v2 + jw;
-			cur.next = new ListNode(v % 10);
-			cur = cur.next;
+			cur.next = new ListNode(v % 10);	   // 添加新的节点的做法
+			cur = cur.next;				   // 指向新节点的对下一个节点的连接
 			jw = v / 10;
 			if (p != null)
 				p = p.next;
