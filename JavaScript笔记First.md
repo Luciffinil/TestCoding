@@ -188,6 +188,46 @@ function doSomething(){
       name : "Nicholas";
       age : 29
   };
+  
+  传入参数时,最好的做法是对必需值使用命名参数,对多个可选参数使用字面量来封装.
+  
+2 访问对象属性, 可以使用电表示法, JavaScript 也可以使用方括号表示法来访问.
+  alert(person.name);                // alert(person["name"];
+  方括号法主要优点是可以通过变量来访问属性:
+  var proName = "name";
+  alert(person[proName]);
+  若属性名中包含会导致语法错误的字符,或者属性名使用的是关键字或保留字,也可以使用方括号表示法.
+  person["first name"] = "Nicholas";
+  
+3 Array 数组的每一项可以保存任何类型的数据, 即每一个位置可保存不同类型数据.
+  创建数组基本方式:
+  第一种 Array 构造函数.
+  var colors = new Array();
+  var colors = new Array("red", "blue", "green");
+  第二种 数组字面量
+  var colors = [];
+  var colors = ["red", "blue", "green"];
+  
+  length 属性的设置,可以从数组末尾移除项或向数组中添加新项.
+  var colors = ["red", "blue", "green"];
+  colors.length = 2;
+  alert(colors[2]);                          // undefined
+  
+  var colors = ["red", "blue", "green"];
+  colors[colors.length] = "black";           // 在第四个位置添加 black
+  
+  var colors = ["red", "blue", "green"];
+  colors[99] = "black" ;
+  alert(colors.length);                      // 100
+  
+  Array.isArray(value) 检测 value 是否是数组
+  
+4 转换方法
+  var colors = ["red", "green", "blue"];
+  alert(colors);                 // red,green,blue  调用 toString() 方法  
+  alert(colors.join("||");       // red||green||blue   不传入参数时,以 , 分隔 
+  若某一项的值是 null 或 undefined, 那么该值在上面的方法中以空字符串表示.
+
 
 
 
