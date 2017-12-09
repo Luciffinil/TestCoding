@@ -1,4 +1,4 @@
-
+```JavaScript
 第五章
 1 创建 Object 实例方式:
   第一种 使用 new 操作符, 后跟 Object 构造函数.
@@ -131,4 +131,86 @@
   
   
   位置方法
+  indexOf() 两个参数, 要查找的项, 查找起点位置的索引(可选)   从数组开头向后查找
+  lastIndexOf()  同样的两个参数   从数组末尾开始向前查找
+  两个方法都返回要查找的项在数组中的位置,没找到返回-1. 比较时,使用全等操作符. 注意返回的是第一个遇到的值.
   
+  迭代方法
+  共5个方法,每个方法都接受两个参数: 要在每一项上运行的函数, 运行该函数的作用域对象(可选) - 影响 this 的值
+  每一项上运行的函数会接收三个参数: 数组项的值, 该项在数组中的位置和数组对象本身.
+  every() 对数组中的每一项运行给定函数, 若该函数对每一项都返回 true, 则返回true. - 查询是否所以项都符合某个条件
+  filter() 对数组中的每一项运行给定函数, 返回该函数会返回 true 的项组成的数组. - 筛选符合某条件的所有项
+  forEach() 对数组中的每一项运行给定函数, 无返回值
+  map() 对数组中的每一项运行给定函数, 返回每次函数调用的结果组成的数组  - 创建与传入数组一一对应的另一个数组
+  some() 对数组中的每一项运行给定函数, ,如果该函数对任一项返回 true, 则返回 true  - 查询是否有某项符合条件
+  var ns = [1,2,3,4,5];
+  var mapR = ns.map(function(item, index, array){
+      return item*2;
+  });
+  alert(mapR);            // 2,4,6,8,10
+  
+  缩小方法 reduce() reduceRight() - 累加器
+  array.reduce(callbackfn[, initialVallue]);
+  function callbackfn(preValue, curValue, index, array){}
+  
+4 Date 类型  - 从1970年1月1日零时开始经过的毫秒数来保存日期.
+  Date.parse() 接受一个表示日期的字符串参数("6/12/2004" 或 "January 12,2004" ...)
+  Date.UTC()  参数为 年份, 从0开始的月份(0-11), 月中的某一天(1-31), 小时数(0-23),分钟,秒以及毫秒数(仅年和月是必需的)
+  var now = new Date();       // 当前日期
+  var sDate = new Date(Date.parse("2004-05-25T00:00:00"));
+  var aDate = new Date(Date.UTC(2005,4,5,17,55,55));
+  
+  toUTCString() 推荐使用方法
+  valueOf()  返回自1970年1月1日的毫秒数
+  getDate()  返回月份中的天数
+  getDay()  返回星期几
+  
+5 RegExp 类型 - 正则表达式
+  var experssion = / pattern / flags;                   // 字面量形式     
+  var exoerssuib = bew RegExp("pattern", "flags");      // 构造函数形式
+  pattern 是正则表达式, flags(一或多个标志), 用以表明正则表达式的行为.
+  标志有: g 全局模式,即正则表达式应用于所有字符串,而非在发现第一个匹配项时立即停止.  - 但是也只会返回第一个匹配项
+         i 不区分大小写,确定匹配项时忽略模式与字符串的大小写
+         m 多行模式,即在到达一行文本末尾时还继续查找下一行中是否存在于模式匹配的项
+         
+  元字符必须转义  ( [ { \ ^ $ | ) ? * + . ] }       
+  构造函数形式的参数都是字符串,所以要对字符进行双重转义.
+  /\[bc\]at/    "\\[bc\\]at"
+  /name\/age/   "name\\/age"
+  /\w\\hello\\123/    "\\w\\\\hello\\\\123"
+  
+  实例方法
+  exec() 专门为捕获组而设计的. 返回包含第一个匹配项信息的数组,没有匹配项时返回 null. 返回的数组为 Array 实例,且包含两个额外属性. index, 表示匹配项在字符串中的位置; input, 表示输入的字符串. 数组中, 第一项是与整个模式匹配的字符串, 其他项是与模式中的捕获组匹配的字符串(没有捕获组时,数组仅包含一项).
+  var text = "mom and dad and baby";
+  var pattern = /mom( and dad( and baby)?)?/gi;
+
+  var matches = pattern.exec(text);
+  alert(matches.index);        // 0
+  alert(matches.input);        // "mom and dad and baby"
+  alert(matches[0]);           // "mom and dad and baby"
+  alert(matches[1]);           // " and dad and baby"
+  alert(matches[2]);           // " and baby"
+  
+  () 捕获组
+  (?:exp) 定义非捕获组,只参与匹配,不会被保存到数组中
+  
+  不设置 g 时, 同一字符多次调用 exec() 将始终返回第一个匹配项的信息. 
+  设置为 g 时, 将会从上次匹配的位置继续向后查找新匹配项
+  
+  test() 匹配是返回 true,佛则返回 false
+  
+  构造函数属性   长属性名  短属性名   说明
+  input           $_    最近一次要匹配的字符串
+  lastMatch       $&    最近一次的匹配项
+  lastParen       S+    最近一次匹配的捕获组
+  leftContext     S`    lastMatch之前的文本
+  rightContext    S'    lastMatch之后的文本
+  multiline       S*    表示是否所以表达式都使用多行模式
+  
+  
+  
+  
+
+
+
+```
