@@ -206,10 +206,135 @@
   leftContext     S`    lastMatch之前的文本
   rightContext    S'    lastMatch之后的文本
   multiline       S*    表示是否所以表达式都使用多行模式
+  $1,$2...$9    存储第1,第2...第9个匹配的捕获组
+  var text = "a short summer";
+  var pattern = /(..)or(.)/g;
+  if(pattern.test(text)){
+      alert(RegExp.$1);       // sh
+      alert(RegExp.$1);       // t
+  }
+  
+6 Function  - 函数是对象,函数名是包含指针的变量. 因此没有重载.
+  function sum(n1, n2){
+      return n1 + n2;
+  }
+  alert(sum(10,10));        // 20
+  var sum2 = sum;           // 不带圆括号的函数名sum表示函数指针,不是调用函数
+  alert(sum2(10,10));       // 20 
+  sum = null;               
+  alert(sum2(10,10);        //20
+  
+  函数声明形式 - 解析器在执行任何代码前读取
+  function sum(n1,n2){
+      return n1+n2;
+  }
+  函数表达式形式  - 执行到时才读取
+  var sum = function(n1,n2){
+      return n1+n2;
+  }
+  
+  ECMAScript 不仅可以像传递参数一样把一个函数传递给另一个函数,而且可以将一个函数作为另一个函数的结果返回.
+  
+  function createCompare(proName){
+      return function (object1, object2) {
+          var v1 = object1[proName];
+          var v2 = object2[proName];
+          if(v1<v2){
+              return -1;
+          } else if(v1>v2){
+              return 1;
+          } else {
+              return 0;
+          }
+      };
+  }
+  var data = [{name:"z",age:10},{name:"y",age:15}];
+  data.sort(createCompare("name"));
+  alert(JSON.stringify(data[0]));     // {name:"y",age:15}
+  data.sort(createCompare("age"));
+  alert(JSON.stringify(data[0]));     // {name:"z",age:10}
+  
+  本来sort(compare)中的 compare无法接受函数,使用这种方式就可以了.
+  
+  函数内部两个特殊对象: arguments, this
+  arguments 主要用途是保存函数参数, 但这个对象还有一个callee属性. 该属性是一个指针,指向拥有这个arguments对象的函数.
+  
+  function fac(n){
+      if(n<=1){
+        return1;
+      } else {
+        return num*fac(n-1);
+      }
+  }
+  
+  这个函数的执行与函数名fac紧紧耦合在一起,可以使用callee解耦.
+  
+  function fac(n){
+      if(n<=1){
+        return1;
+      } else {
+        return num*arguments.callee(n-1);
+      }
+  }
+  
+  严格模式下访问 arguments.callee, arguments.caller 都会导致错误.
+  
+  this 引用函数据以执行的环境对象
   
   
+  函数属性
+  length   函数希望接受的命名参数个数
+  prototype  保存所有方法实例的存在,第六章详细介绍
   
+  函数方法
+  apply() call() 用于特定的作用域中调用函数 - 能够扩充函数赖以运行的作用域(好处是对象不需要于方法有任何耦合关系)
+  apply() 接收两个参数: 运行函数作用域, 参数数组(可以是 Array 实例, 也可是 arguments 对象)
+  call() 类似于 apply(), 不过第二个参数必须逐个列举出来.  
   
+  window.color = "red";
+  var o = {color: "blue"};
+  
+  fuction sayColor(){
+      alert(this.color);      
+  }
+  
+  sayColor();                 // red
+  sayColor.call(this);        // red
+  sayColor.call(window);      // red
+  sayColor.call(o);           // blue
+
+  var oSayColor = sayColor.bind(o);    // 起相同作用的bind()函数
+  oSayColor();                // blue
+
+
+7 基本包装类型 特殊的引用类型 Boolean, Number, String
+  每当读取一个基本类型值的时候,后台就会创建一个对应的基本包装类型的对象,从而可以调用一些方法来操作. 但这个包装类型,只存在一行代码执行的瞬间,然后立即被销毁.
+  对基本包装类型的实例调用 typeof 会返回 "object", 而所有基本包装类型的对象都会被转换为布尔值 true.
+  var falseObject = new Boolean(false);
+  var result = falseObject && true;         // falseObject 是基本包装类型,存储的是false, 但本身的值是 
+  alert(result);                            // true
+  
+  把字符串传给 Object 构造函数,就会创建 String 实例. 同理, Number 和 Boolean.
+  var obj = new Object("some text");
+  alert(obj instanceof String);         // true
+  
+  Number 类型 toFixed() 传入一个参数, 按指定小数位返回数值的字符串表示(标准时0到20位)
+              toExponential() 同样传入一个参数表示小数位数, 以指数表示法(e表示法)返回数值的字符串表示
+              toPrecision() 传入一个参数表示所有数字的位数(不包括指数部分) - 1到21位小数
+  var num = 99;
+  alert(num.toFixed(2));      // "99.00"
+  alert(num.toExponential(1));      // "9.9e+1"
+  alert(num.toPrecision(1));      // "1e+2"    
+  alert(num.toPrecision(2));      // "99"  
+  alert(num.toPrecision(3));      // "99.0"  
+  
+  Stirng
+
+
+
+
+
+
 
 
 
