@@ -164,7 +164,7 @@
   valueOf()  返回自1970年1月1日的毫秒数
   getDate()  返回月份中的天数
   getDay()  返回星期几
-  
+
 5 RegExp 类型 - 正则表达式
   var experssion = / pattern / flags;                   // 字面量形式     
   var exoerssuib = bew RegExp("pattern", "flags");      // 构造函数形式
@@ -207,13 +207,15 @@
   rightContext    S'    lastMatch之后的文本
   multiline       S*    表示是否所以表达式都使用多行模式
   $1,$2...$9    存储第1,第2...第9个匹配的捕获组
+  
   var text = "a short summer";
   var pattern = /(..)or(.)/g;
   if(pattern.test(text)){
       alert(RegExp.$1);       // sh
       alert(RegExp.$1);       // t
   }
-  
+```
+```Javascript
 6 Function  - 函数是对象,函数名是包含指针的变量. 因此没有重载.
   function sum(n1, n2){
       return n1 + n2;
@@ -465,7 +467,42 @@
   ![Image of Linkage](http://images0.cnblogs.com/blog2015/549190/201506/051327073016752.png)
   
   
-```JavaScript
+  ```JavaScript
+  function Person(){
+  }
+
+  person.prototype.name = "Nicholas";
+  person.prototype.age = 29;
+  person.prototype.job = "Software Engineer";
+  person.prototype.sayName = function(){
+      alert(this.name);
+  };
+  var person1 = new Person;
+  person1.sayName();             // "Nicholas"
+
+  var person2 = new Person;
+  person2.sayName();             // "Nicholas"
+
+  alert(person1.sayName == person2.sayName);        //true
+
+  上图展示了 Person构造函数, Person.prototype 原型模型 以及 person 实例之间的关系
+  Person.prototype指向原型对象, 而 Person.prototype.constructor 又指回 构造函数. 实例与构造函数没有直接关系.
+  使用 Object.getPrototypOf()可以获得实例中[[Prototype]]的值.
+  
+  每当代码读取某个对象的某个属性时, 都会执行一次搜索. 首先从对象实例本身开始搜索, 如果没找到,再去搜索指针指向的原型对象.
+  给实例中添加属性,若该属性与实例原型中的一个属性同名,则该属性会屏蔽原型中的属性.不过不会对原型的值进行更改.
+  person1.hasOwnProperty("name") : 只有在实例中存在 name 属性时,返回 true
+  "name" in person1   只要能访问到 name 属性,无论在实例中还是原型中, 返回 true
+  
+  function hasPrototypeProperty(object, name){    // 返回true说明属性为原型属性
+      return !object.hasOwnProperty(name) && (name in object);
+  }
+  
+  
+
+
+
+
 
 
 
