@@ -1,4 +1,6 @@
 ```JavaScript
+每创建一个函数,就会同时创建它的prototype对象,这个对象也会自动获得constructor属性.
+
 第五章
 1 创建 Object 实例方式:
   第一种 使用 new 操作符, 后跟 Object 构造函数.
@@ -498,13 +500,76 @@
       return !object.hasOwnProperty(name) && (name in object);
   }
   
+  for-in 循环,返回的 是所以能通过对象访问的,可枚举的(enumerated)属性,既包括实例中的属性,也包括原型中的属性 (所有开发人员定义的属性都是可枚举的)
+  for(var prop in object){
+      do something;
+  }
+  不可枚举的方法和属性包括: hasOwnProperty(), toString(), constructor, prototype等.
+  取得所有可枚举的实例属性,可以使用 Object.keys(Person.prototype)方法.
+  取得所有实例属性,不论是否可枚举,可以使用 Object.getOwnPropertyNames(Person.prototype)方法
   
+  更简单的原型语法
+  function Person(){
+  }
 
+  Person.prototype = {
+      name: "Nicholas",
+      age: 29,
+      job: "Software Engineer",
+      sayName: function(){
+          alert(this.name);
+      }
+  };
+  不过这样的话,constructor属性不再指向Person,而是指向Object.
+  因此,可以设置constructor的值.
+  Person.prototype = {
+      constructor: Person
+      name: "Nicholas",
+      age: 29,
+      job: "Software Engineer",
+      sayName: function(){
+          alert(this.name);
+      }
+  };
+  这会导致 constructor属性的[[Enumerable]]属性被设置为true,因此可以使用Object.defineProperty().
+  function Person(){
+  }
 
-
-
-
-
+  Person.prototype = {
+      name: "Nicholas",
+      age: 29,
+      job: "Software Engineer",
+      sayName: function(){
+          alert(this.name);
+      }
+  };
+  
+  Object.defineProperty(Person.prototype, "constructor",{
+      enumerable: false,
+      value: Person
+  });
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 ```
  
