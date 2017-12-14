@@ -329,13 +329,158 @@
   alert(num.toPrecision(3));      // "99.0"  
   
   Stirng
+  字符方法   charAt()   charCodeAt()
+  字符串操作方法    concat()  slice()  substr()   substring()
+  字符串位置方法    indexOf()  lastIndexOf()
+  trim()方法
+  大小写转换方法    toLowerCase()  toLocaleLowerCase()  toUpperCase()  toLocaleUpperCase()
+  模式匹配方法      match()  search()   replace()  split()
+  localeCompare()方法
+  fromCharCode()方法   与charCodeAt() 执行相反的操作
+  
+8 单体内置对象
+  Global对象: encodeURI() 转义空格等非有效字符   encodeURIComponent()  转义所有字符
+              eval()   严格模式下,外部无法访问 eval() 中创建的任何变量或函数
+              获取 Global 对象: 作为 window 对象的一部分 或
+                               var globa = function(){
+                                   return this;
+                               }
+  Math对象: min(), max()   
+           Math.ceil() 向上舍入   Math.floor()  向下舍入   Math.round()  四舍五入
+           random()方法 -  返回介于0和1之间的随机数,不包括0,1
+           随机取两个数之间的随机数
+           function selectFrom(lowValue, upValue){
+               var choices = upValue - lowValue + 1;
+               return Math.floor(Math.random * choices + lowValue);
+           }
+  
+第六章 面向对象设计
+1 数据属性: [[Configurable]] 能否删除,修改特性
+           [[Enumerable]]  能否通过 for-in 循环返回属性
+           [[Writable]]   能否修改属性的值
+           [[Value]]
+           前三个值默认为true.
+           调用Object.defineProperty()修改特性时,如果不指定,前三个值都为false.
+           
+  访问器属性: [[Configurable]]
+             [[Enumerable]]
+             [[Get]]
+             [[Set]]
+    
+  var book = {
+                _year: 2004,
+                edition: 1
+  };
+  Object.defineProperty(book, "year", {    // 不能使用 _year, 否则会陷入死循环
+      get: function() {
+          return this._year;
+      },
+      set: function(newValue) {
+          if (newValue > 2004) {
+              this._year = newValue;
+              this.edition += newValue - 2004;
+          }
+      }
+  });
+  book.year = 2005; //执行了 setter    // 使用定义的 year 属性
+  console.log(book.edition);    // 2
 
+  _year 的下划线是常用记号,表示应该通过对象方法访问的属性. 不过直接访问也是允许的.
+  不一定同时写 getter 和 setter, 利用这点可以控制属性的读取和写入
+  
+  定义多个属性   Object.defineProperties()
+  var book = {};
+  Object.defineProperties(book, {
+      _year: {
+          value: 2004
+      },
+      edition: {
+          value: 1
+      }
+      
+      year: {
+          get: function() {
+             return this._year;
+          },
+          set: function(newValue) {
+              if (newValue > 2004) {
+                  this._year = newValue;
+                  this.edition += newValue - 2004;
+              }
+          }
+      }
+  });
 
-
-
-
-
+  读取属性的特性  Object.getOwnPropertyDescriptor()
+    
+2 创建对象
+  工厂模式: 解决了创建多个相似对象的问题,但没有解决对象识别的问题(即不指定一个对象的类型).
+  function createPerson(name, age, job){
+      var o = new Object();
+      o.name = name;
+      o.age = age;
+      o.job = job;
+      o.sayName = function(){
+          alert(this.name);
+      };
+      return o;
+  }
+  var person1 = createPerson("Nicholas", 29, "Software Engineer");
+  
+  构造函数模式:
+  function Person(name, age, job){
+      this.name = name;
+      this.age = age;
+      this.job = job;
+      this.sayName = function(){    // 相当于 this.sayName = new Function("alert(this.name)");
+          alert(this.name);
+      };
+  }   
+  var person1 = new Person("Nicholas", 29, "Software Engineer");
+  alert(Person1.constructor == Person);     // true, person1 有一个 constructor(构造函数) 属性,指向Person
+  调用构造函数会经历以下四个步骤:
+  (1) 创建一个对象
+  (2) 将构造函数的作用域赋给新对象
+  (3) 执行构造函数中代码
+  (4) 返回新对象
+  
+  
+  构造函数的问题: Person内部的sayName()方法,对于每一个Person都是不同的,即不同实例上的同名函数是不相等的. - 这对于某些情况是有用的,但是创建两个完成同样任务的Fucntion实例就没有必要了. 因此,可以把函数定义转移到构造函数外部来解决这个问题.
+  function Person(name, age, job){
+      this.name = name;
+      this.age = age;
+      this.job = job;
+      this.sayName = sayName;
+  }
+  function sayName(){    
+      alert(this.name);
+  }      
+  var person1 = new Person("Nicholas", 29, "Software Engineer");
+  
+  新的问题: 全局作用域的函数只能被某个对象调用. 而且,如果对象需要定义很多方法,那么就要定义多个全局函数,于是这个自定义的引用类型就毫无封装性可言了.所以需要通过 原型模式 来解决.
+  
+```  
+  原型模式
+  
+  ![Image of Linkage](http://images0.cnblogs.com/blog2015/549190/201506/051327073016752.png)
+  
+  
+```JavaScript
 
 
 
 ```
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
