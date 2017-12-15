@@ -550,14 +550,71 @@
   });
   
   
+  原型的动态性
+  实例化后,再向原型中添加属性方法,依然立即可以在实例中反映出来. 但是如果是重写整个原型对象, 该原型对象实际上就不再是实例对象所指向的原型了.
   
+  原型对象的问题
+  function Person(){
+  }
   
+  Person.prototype = {
+      constructor: Person,
+      friends: ["a","b"],
+      age: 28,
+      name: "Nicholas"
+  };
   
+  var person1 = new Person();
+  var person2 = new Person();
+  person1.friends.push("c");      // 修改的 friends 属性存在于原型中,而不是存在于 person1 实例中
+  alert(person1.friends);         // "a,b,c"
+  alert(person2.friends);         // "a,b,c"
   
+  组合使用构造函数模式和原型模式: 构造函数用于定义实例属性, 原型模式用于定义方法和共享的属性.
   
+  动态原型模式
+  function Person(name, age, job){
+      this.name = name;
+      this.age = age;
+      this.job = job;
+      
+      if(typeof this.sayName != "function"){
+          Person.prototype.sayName = function(){
+              alert(this.name);
+          };
+      }
+  }
   
+  寄生构造函数模式(不推荐) - 可以在特殊情况下用来为对象创建构造函数 - 工厂模式套用构造函数方法
+  function SpecialArray(){
+      var values = new Array();
+      values.push.apply(values, arguments);
+      values.toPipedString = function(){
+          return this.join("|");
+      }
+      return values;
+  }
+  var colors = new SpecialArray("red","blue","greed");
+  alert(colors.toPipedString());                // "red|blue|green"
   
+  稳妥构造函数模式 - 不把属性挂在返回的对象属性下,只通过方法显示
+  稳妥对象: 没有公共属性,而且其方法也不引用this的对象.
+  function Person(name, age, job){
+      var o = new Object();
+      
+      o.sayName = function(){
+          alert(name);
+      }
+      return o;
+  }
+  var friend = Person("Nic", 29, "se");
+  friend.sayName();           // "Nic"
+  friend.name;                // undefined
+ 
   
+3 继承  
+  接口继承: 继承方法签名(ECMAScript的函数没有签名,无法实现接口继承)
+  实现继承: 继承实现方法(ECMAScript的实现继承主要依靠原型链实现的)
   
   
   
