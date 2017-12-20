@@ -612,22 +612,340 @@
   friend.name;                // undefined
  
   
-3 继承  
+3 继承  - 原型对象等于另一个类型的实例
   接口继承: 继承方法签名(ECMAScript的函数没有签名,无法实现接口继承)
   实现继承: 继承实现方法(ECMAScript的实现继承主要依靠原型链实现的)
   
+  function SuperType(){
+      this.property = true;
+  }
+  
+  SuperType.prototype.getSuperValue = function(){
+      return this.property;
+  }
+  
+  function SubType(){
+      this.subproperty = false;
+  }
+  
+  SubType.prototype = new SuperType();
+  
+  SubType.prototype.getSubValue = function(){
+      return this.subproperty;
+  }
+  
+  var instance = new SubType();
+  alert(instance.getSuperValue());                    // true
+  
+```
+![继承关系](http://images.cnitblog.com/blog/362290/201305/21215810-0c113df43d1948a28f2a0535fd974e57.png)
+  
+```JavaScript
+  isPrototypeOf() 是否为某个特定原型
+ 
+  重写超类中方法或添加某个方法,一定要放在替换原型的语句之后(即继承关系声明之后).
+ 
+ 
+  原型链的问题 - (1)引用类型值的原型, 原来的实例属性会变成现在的原型属性
+               (2)无法再不影响所有对象实例的情况下,给超类的构造函数传递参数
+  
+  借用构造函数(伪造对象,经典继承) - 在子类型构造函数的内部调用超类型构造函数
+  function SuperType(){
+      this.color = {"red"};
+  }
+  
+  function SubType(){
+      // 继承SuperType
+      SuperType.call(this);
+  }
+  
+  var instance1 = new SubType();
+  instance1.colors.push("black");
+  alert(instance1.colors);          // "red,black"
+  
+  var instance2 = new SubType();
+  alert(instance2.colors);          // "red"
+  
+  同时,call()还可以直接传递参数给超类. 
+  
+  
+  组合继承(伪经典继承) - 原型链实现对原型属性和方法的继承,借用构造函数来实现对实例属性的继承.
+  function SuperType(name){
+      this.name = name;
+      this.color = {"red"};
+  }
+  
+  SuperType.prototype.sayName = function(){
+      alert(this.name);
+  }
+  
+  function SubType(name, age){
+      // 继承属性
+      SuperType.call(this, name);          //第二次调用 SuperType
+      this.age = age; 
+  }
+  
+  // 继承方法
+  SubType.prototype = new SuperType();     //第一次调用 SuperType
+  
+  SubType.prototype.sayAge = function(){
+      alert(this.age);
+  }
+  
+  var instance1 = new SubType("Nicholas", 29);
+  instance1.colors.push("black");
+  alert(instance1.colors);          // "red,black"
+  instance1.sayName();              // "Nicholas"
+  instance1.sayAge();               // 29
+  
+  组合继承最大的问题: 无论什么情况下, 都会调用两次超类型构造函数. 一次是在创建子类型原型的时候,一次是在子类型构造函数内部.
+  
+  寄生式继承 - object() 函数内部,先创建一个临时性构造函数,然后将传入的对象作为这个构造函数的原型,最后返回这个临时类型的一个新实例.
+  function createAnother(original){
+      var clone = object(original);             // 返回 original 函数的一个副本  
+      clone.sayHi = function(){                 // 增强
+          alert("hi");  
+      };
+      return clone;                             // 返回这个对象
+  }
+  
+  寄生式组合继承 - 使用寄生式继承来继承超类型的原型.然后将结果指定给子类型的原型
+  function inheritPrototype(subType, superType){
+      var prototype = object(superType.prototype);      // 创建对象
+      prototype.constructor = subType;                  // 增强对象
+      subType.prototype = prototype;                    // 指向对象
+  }
+  
+  function SuperType(name){
+      this.name = name;
+      this.color = {"red"};
+  }
+  
+  SuperType.prototype.sayName = function(){
+      alert(this.name);
+  }
+  
+  function SubType(name, age){
+      // 继承属性
+      SuperType.call(this, name);         
+      this.age = age; 
+  }
+  
+ inheritPrototype(SubType,SuperType);
+  
+  SubType.prototype.sayAge = function(){
+      alert(this.age);
+  }
+  
+  只调用一次 SuperType, 避免了在SubType.prototype上创建多余的属性.
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
+第7章  函数表达式
+1 递归
+前面 function 部分提到了递归可以使用  arguments.cellee 来解耦合,不过严格模式下无法使用.因此可以通过函数表达式达成效果.
+var factorial = (function f(n){
+    if (n <= 1){
+        return 1;
+    } else {
+        return n * f(n-1);
+    }
+});
 
+console.log(factorial(4)); //24 4*3*2*1
+
+这样,即使把函数赋值给另一个变量,函数名字 f 依然有效.
+
+2 闭包 - 有权访问另一个函数作用域中的变量的函数,一般就是在一个函数内部创建另一个函数  
+  闭包可以用在许多地方。它的最大用处有两个，一个是前面提到的可以读取函数内部的变量，另一个就是让这些变量的值始终保持在内存中。
+  闭包的副作用是闭包只能取得包含函数中任何变量的最后一个值。
+  function creFunc(){
+      var result = new Array();
+      
+      for(var i=0;i<10;i++){
+          result[i] = function(){
+              return i;
+          };
+      }
+      return result;        // 实际返回的数组中,所有的值都是 10. 因为每个函数的作用域链中都保存着creFunc的活动回血,引用同一个变量i
+  }
+  alert(creFunc()[0]());    // 10     creFunc() 返回一个函数数组,[0]取第一个函数,()表示执行该函数
+  
+  改造如下可实现预期效果
+  function creFunc(){
+      var result = new Array();
+      
+      for(var i=0;i<10;i++){
+          result[i] = (function(num){
+              return function(){
+                  return num;
+              })(i);                   //  result[i] = (function()...)(i) 将i作为参数传入
+          };
+      }
+      return result;        
+  }
+  alert(creFunc()[0]());              // 0    i作为参数按值传入,不再指向i变量
+  
+  
+  
+  this 对象 - this 对象指向的是调用该方法的环境
+  匿名函数执行环境具有全局性,所以其 this 对象通常指向 window.
+  var name = "window";
+  var object = {
+      name = "object";
+      getNameFunc :function(){
+          return function(){
+              return this.name;
+          }
+      };
+  };
+  alert(object.getNameFunc()());           // "window"   getNameFun函数的返回值是匿名函数
+  
+  
+  var name = "window";
+  var object = {
+      name = "object";
+      getNameFunc :function(){
+          var that = this;
+          return function(){
+              return that.name;
+          }
+      };
+  };
+  alert(object.getNameFunc()());           // "object"   用 that 记录下 object的环境
+  
+  
+  var name = "window";
+  var object = {
+      name = "object";
+      getNameFunc :function(){
+          return this.name;
+      };
+  };
+  alert(object.getNameFunc());                       // "object"
+  alert((object.getNameFunc)());                     // "object"    方法加了括号,相当于引用这个函数
+  alert((object.getNameFunc = object.getNameFunc)());             // "window"   前面相等操作,返回函数本身,但不包含object环境
+  
+  
+  内存泄漏 - 闭包引用的元素不会被回收
+  
+  
+  
+  模仿块级作用域 - 匿名函数
+  Js中,块语句中定义的变量,实际上是在包含函数中而非语句中创建的.
+  
+  用作块级作用域(私有作用域)的匿名函数语法:
+  (function(){                // 函数声明包含在一对圆括号中,表示它实际上是一个函数表达式(函数声明转化为函数表达式的方法)
+      // 块级作用域
+  })();                       // 紧随其后的括号会立即调用这个函数
+
+  这种技术常在全局作用域中被用在函数外部,从而限制向全局作用域中添加过多变量和函数.
+  
+  
+  
+  私有变量 - 函数的参数,局部变量,函数内部定义的其他函数
+  
+  访问私有变量和私有函数的公有方法被为  特权方法. 两种在对象上创建特权方法的方式.
+  一是在构造函数中定义. - 每个实例都会创建一组同样的新方法
+  function MyObject(){
+      var privateVariable = 10;                  // 局部变量,无法直接访问
+      function privateFunction(){
+          return false;
+      }
+      
+      // 特权方法
+      this.publicMethod = function(){
+          privateVariable++;
+          return privateFunction();
+      }
+  }
+  
+  二是静态私有变量 - 通过在私有作用域中定义私有变量或函数.所以私有变量和函数都是由实例共享的.
+  (function(){
+      var privateVariable = 10;                  
+      function privateFunction(){
+          return false;
+      }
+      
+      // 构造函数, 不使用var,所以Myobject是一个全局变量
+      MyObject = function(){
+      };
+      
+      // 特权方法
+      MyObject.prototype.publicMethod = function(){
+          privateVariable++;
+          return privateFunction();
+      };
+  })();
+  
+  
+  
+  
+  模块模式 -  为单例创建私有变量和特权方法
+  var singleton = (function(){
+  
+      var privateVariable = 10;                  
+      function privateFunction(){
+          return false;
+      }
+      
+      return {
+          publicProperty: true,
+          publicMethod : function(){
+              privateVariable++;
+              return privateFunction();
+          }    
+      };
+  })());
+  
+  模块模式可以创建一个对象并以某些数据对其进行初始化,同时还要公开一些能够访问这些私有数据的方法.
+  
+  
+  增强模块模式  - 返回对象之前加入对其增强的代码,适用于单例必须是某种类型的实例,且必须添加某些属性或方法的情况
+  var singleton = (function(){
+  
+      var privateVariable = 10;                  
+      function privateFunction(){
+          return false;
+      }
+      
+      var object = new CustomType();
+      
+      object.publicProperty = true;
+      
+      object.publicMethod = function(){
+              privateVariable++;
+              return privateFunction();
+      };
+      
+      return object;
+  })());
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 ```
  
 
