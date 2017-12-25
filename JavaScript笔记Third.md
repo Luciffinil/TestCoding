@@ -211,17 +211,79 @@ document.writeln()  自动换行
 
 
 3 Element 类型
+元素标签名 nodeName, tagName. HTML中实际输出的全部是大写表示, XML中会与源代码中保持一致.
+
+  HTML元素 - 由HTMLElement类型表示,该类型继承自Element,并添加了一些属性.
+id: 元素在文档中的唯一标识符
+title: 附加说明信息,鼠标移动到元素所在位置时显示
+className: class的特性,即为元素指定的CSS类.(class是ECMAScript的保留字,不能使用)
+
+  取得特性
+getAttribute(), setAttribute(), removeAttribute()  
+alert(div.getAttribute("class"));
+
+特殊的特性
+div.getAttribute("style")  返回style特性值中包含的Css文本
+div.style                  返回一个对象
+
+div.getAttribute("onclick")  返回代码的字符串
+div.onclick                  返回一个JavaScript函数
+
+因此,常用属性方式取得特性,只有在取得自定义特性值时,使用 getAttribute() 方法.
+
+  设置特性 
+setAttribute() 可用来操作自定义特性, 使用属性设置自定义特性, 该属性不会自动成为元素的特性.
+
+
+  attributes 属性 - 包含一个 NamedNodeMap,与NodeList类似.
+getNamedItem(name): 返回nodeName 等于 name 的节点,也可使用方括号语法
+removeNamedItem(name) 移除,返回被移除的Attr节点
+setNamedItem(name) 添加
+item(pos) 返回位于数字 pos 位置处的节点
+
+var id = element.attributes.getNamedItem("id").nodeValue;
+var id = element.attributes["id"].nodeValue;
+
+遍历元素特性时,能用的上 attributes 属性.
+function outputAttributes(element){
+    var pairs = new Array(),
+        attrName,
+        attrValue,
+        i,
+        len;
+    for(i=0, len=e.attributes.length;i<len;i++){
+        attrName = e.attributes[i].nodeName;
+        attrValue = e.attributes[i].nodeValue;
+        pairs.push(attrName + "=\"" + attrValue + "\"");    
+    }
+    return pairs.join(" ");         // 返回一个以空格隔开的字符串,序列化长字符串的一种常用技巧
+}
 
 
 
+  创建元素
+document.createElement() 只接受一个参数,即标签名
+之后添加元素的特性
+再添加到文档树(appendChild,insertBefore...)
+
+ie种可以使用createElement,直接传入完整的元素标签.
 
 
+  元素的子节点
+<ul id="myList">
+    <li>item1</li>
+    <li>item2</li>
+    <li>item3</li>
+</ul>    
+除了ie, 其他浏览器通过childNodes属性遍历子节点时,会包含7个元素,3个<li>和4个文本节点(<li>之间的空白符).
+因此,操作前应检查 nodeType属性. 只有 nodeType 为1,表示元素节点才进行操作.
 
 
-
-
-
-
+4 Text 类型 - 没有子节点
+通过 nodeValue 或 data 属性访问文本
+  
+  创建文本节点
+document.createTextNode()
 
 
 
