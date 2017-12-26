@@ -284,6 +284,139 @@ ie种可以使用createElement,直接传入完整的元素标签.
   
   创建文本节点
 document.createTextNode()
+  合并文本节点
+element.normalize();
+  分割文本节点
+element.splitText(5);
+
+
+5 Comment 类型 - 注释,不支持子节点,继承自Text类型
+通过 nodeValue 或 data 属性访问文本
+浏览器不会识别</html>标签后面的注释
+
+
+6 CDATASection类型 - 只针对基于XML的文档,表示 CDATA 区域. 继承自Text类型
+
+7 DocumentFragment 类型 - 不能直接添加到文档中,但可以作为一个 仓库 来使用,保存可能会添加到文档中的节点.
+
+
+
+  DOM 操作技术
+动态脚本
+function loadScript(url){
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = url;
+    document.body.appendChild(script);
+}
+
+loadScript("client.js");
+
+动态样式
+function loadStyles(url){
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.herf = url;
+    var head = document.getElementByTagName("head")[0];
+    head.appendChild(link);           // 放在head才能保证在所有浏览器中的行为一致
+}
+
+loadStyles("styles.css");
+
+还有一种操作方式,是直接传入script和css语句,作为文本方式传入.
+style.appendChild(document.createTextNode(script/css));
+对ie:  script.text = code;
+       style.styleSheet.cssText = css;
+
+
+操作表格
+insertRow()
+insertCell()
+
+使用NodeList
+"动态的"集合: NodeList, NamedNodeMap, HTMLCollection
+因为这些集合是动态变化的,迭代时应使用如下方式:
+for(i=0,len=divs.length;i<len;i++){}
+
+
+
+第11章  DOM扩展
+
+1 Selection API - 让浏览器原生支持CSS查询
+  
+由 Documen, ELement, DocumentFragment 调用下面两个方法
+  querySelector()方法 - 接受一个CSS选择符
+var body = document.querySelection("body");               // 取得标签名为 body 的元素 
+var myDiv = document.querySelection("#myDiv");            // 取得 id 为 myDiv 的元素
+var selected = document.querySelection(".selected");      // 取得类为 selected 的第一个
+var img = document.querySelection("img.button");          // 取得类为button 的第一个 img 元素
+
+
+  querySelectionAll()方法 - 返回所以匹配的元素,一个 NodeList 的实例(该NodeList不会动态查询,只是一组元素的快照)
+var strongs = document.querySelectionAll("p strong");     // 取得所以 <p> 元素中的所有 <strong> 元素
+
+  
+  matchesSelector() 方法 - 接受一个CSS选择符 
+若果调用元素与该选择符匹配,返回 true; 否则返回 false.  
+
+2 元素遍历
+childNodes 会返回元素间的空格作为文本节点. 未解决这个问题,定义了一组属性:
+childElementCount: 返回子元素个数(不包括文本节点和注释)
+firstElementChild: 
+lastElementChild:
+previousElementSibling:
+nextElementSibling:
+
+
+3 HTML5
+getElementByClassName() - 传入一个包含一个或多个类名的字符串,返回 NodeList(动态).
+
+  操作类名的新方式 - classList属性
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
