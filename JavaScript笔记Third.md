@@ -372,35 +372,136 @@ nextElementSibling:
 3 HTML5
 getElementByClassName() - 传入一个包含一个或多个类名的字符串,返回 NodeList(动态).
 
-  操作类名的新方式 - classList属性
+  操作类名的新方式 - classList属性,极大降低修改多个class的复杂度
+classList 是DOMTokenList 的实例,可以使用item()或方括号语法获取每个元素. classList定义了如下方法:
+add(): 将给定字符串添加到列表中.若值存在,就不添加了.
+contains(): 是否存在
+remove(): 删除
+toggle(): 若存在,删除;若没有,则添加
+
+<div class="bd user disabled">...</div>
+
+div.classList.remove("user");
+
+
+4 焦点管理
+document.activeElement 属性 - 始终会引用 DOM 中当前获得了焦点的元素
+元素获得焦点的方式: 页面加载(加载完时,保存document.body),用户输入(通常是按Tab键),代码中调用focus()方法
+
+document.hasFocus() 通过检测文档是否获得了焦点,可以知道用户是不是正在与页面交互
+
+无障碍web应用的一个主要标志就是恰当的焦点管理.
+
+
+5 HTMLDocument
+  document.readyState 属性, 通过它来实现一个指示文档已经加载完成的指示器. 该属性有两个值:
+loading: 正在加载文档
+complete: 已加载完文档
+
+  兼容模式
+  document.compatMode
+CSS1Compat  标准模式
+BackCompat  混杂模式
+
+  document.head 来引用 <head> 元素
   
 
+6 字符集属性
+document.charset  文档实际使用的字符集
+document.defaultCharset     默认浏览器及操作系统的设置字符集
+
+
+7 自定义数据属性 - 前缀需加 data-
+添加了自定义属性后,可以通过元素的 dataset 属性来访问自定义属性的值. dataset 属性的值是 DOMStringMap 的一个实例,即名值对的映射.
+<div id="myDiv" data-appId="123"></div>
+
+var div = document.getElementById("myDiv");
+var appId = div.dataset.appId;
+
+可用来给元素添加一些不可见的数据以便进行其他处理.
+
+
+7 插入标记 - 直接插入 HTML 字符串
+  innerHTML - 大部分插入的<script>元素不会执行其中的脚本
+读模式下, innerHTML 属性返回与调用元素的所有子节点(包括元素,注释和文本节点)对应的HTML标记. - 不同浏览器会返回不完全相同的值
+写模式下, innerHTML 会根据指定的值创建新的 DOM 树,然后用此DOM 树完全替换调用元素原先的所有子节点.
+
+<col>,<colgroup>,<frameset>,<head>,<html>,<style>,<table>,<tbody>,<thead>,<tfoot>,<tr> 不支持 innerHTML.
+
+  outerHTML - 其他的与 innerHTML 相同. 不过读取和写入时,会同时读取和替换调用元素本身
+
+<div id="myDiv">abc</div>
+
+var div = document.getElementById("myDiv");
+alert(div.innerHTML);                               // abc
+alert(div.outerHTML);                               // <div id="myDiv">abc</div>
+div.innerHTML = "<p>Hello</p>";                     // div 变为 <div id="myDiv"><p>Hello</p></div>
+div.outerHTML = "<p>Hello</p>";                     // div 变为 <p>Hello</p>
+
+  
+  insertAdjacentHTML() 方法 - 接受两个参数: 插入位置, 要插入的HTML文本
+第一个参数有以下几个值:
+beforebegin: 当前元素之前插入一个紧邻的同辈元素
+afterbegin: 当前元素之下插入一个新的子元素,或在第一个子元素之前插入 
+beforeend: 当前元素之下 或最后一个子元素之后
+afterend: 当前元素之后
+
+  内存
+上述三种方法,可能导致浏览器内存占用问题. (与元素的事件处理管理的关系没有被删除)因此,最好手工删除要被替换的元素的所有事件处理程序和JS对象属性.
+
+  性能
+设置 innerHTML 和 outerHTML 时会创建 HTML 解析器.因此不宜频繁调用,最好准备好html语句,一次操作.  
+  
+
+8 以下两个方法作用对象是元素的容器. 
+  scrollIntoView()方法 - 参数文件true或不填,会让调用元素顶部与视口顶部尽可能平齐. false,底部与视口顶部平齐.
+  可在所有HTML元素上调用
+
+  scrollIntoViewIfNeeded() 只有当前元素在视口中不可见的情况下,才滚动浏览器窗口或容器元素,最终让它可见
+  参数为 true 时,表示尽量将元素显示在视口中部(垂直方向).
+  
+  以下两个方法影响的则是元素本身
+  scrollByLines()   将元素内容滚动指定的行高
+  scrollByPages()   将元素的内容滚动指定的页面高度
+  
+  
+9 children属性 - 只包含元素中同样还是元素的子节点
+
+10 contain() 获取节点是否为元素的后代信息
+   compareDocumentPosition() 也能确定节点间的关系. 返回一个表示节点关系的掩码.
+1   无关
+2   给定节点在DOM树种位于参考节点之前
+4   给定节点在DOM树种位于参考节点之后
+8   包含
+16  被包含
+
+var result = document.documentElement.compareDocumentPosition(document.body);     
+// result 为 20. body被html包含(16),位于其之后(4). 共20
+alert(!!(result & 16)); 
+// !! 会将数值转换为 布尔值, 这句话用来确定是否包含16,若包含,则是子节点,返回true
 
 
 
 
 
+第 12 章 DOM2 DOM3
+1 检查是否支持DOM扩展模块
+var supportsDOM2Core = document.implementation.hasFeature("Core","2.0");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+2 针对 XML  命名空间 - 不同XML文档的元素可以混合在一起
+HTML不支持XML命名空间, 但 XHTML 支持.
+对于混合使用两种语言的情况下,命名空间用处就很大.
+<html xmlns="http://www.w3.org/1999/xhtml">                                     // xhtml 命名空间
+    <head>
+        <title>Example</title>
+    </head>
+    <body>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1"                  // svg 命名空间
+            viewBox="0 0 100 100" style="width:100%; height:100%">
+            <rect x="0" y="0" width="100" height="100" style="fill:red"/>
+        </svg>
+    </body>
+</html>    
 
 
 
