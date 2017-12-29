@@ -503,22 +503,72 @@ HTML不支持XML命名空间, 但 XHTML 支持.
     </body>
 </html>    
 
+3 document.defaultView 指向拥有给定文档的窗口(或框架)的指针
+
+4 DOM3 针对为DOM节点添加额外数据引入了方法: setUserData()
+var div = document.createElement("div");
+div.setUserData("name", "Nicholas", function(operation,key,value,src,dest){
+// function 的5个参数: 操作类型(1表示复制,2表示导入,3表示删除.4表示重命名), 数据键, 数据值,源节点, 目标节点
+    if(operation == 1){
+        dest.setUserData(key,value,function(){};
+    }
+});
+
+5 框架用 HTMLFrameElement 表示, 内嵌框架用 HTMLIFrameElement. 它们的属性 contentDocument 指向框架内容的文档对象.
+访问框架或内嵌框架的文档对象要受到跨域安全策略的限制,若框架中页面来自其他域或不同子域,或使用了不同协议,那访问该框架文档对象就会出错.
+
+
+6 style特性
+对于使用短划线的CSS属性名,必须将其转换成驼峰大小写形式,才能通过Javascript访问. (如 background-image    style.backgroundImage)
+myDiv.style.backgroundColor = "red";
+
+style 的属性和方法:
+cssText: 访问和修改style特性中的整体CSS代码
+length: CSS属性数量, 遍历时使用,使用item(i)或[i]返回 css元素的属性名
+getPropertyValue(): 取得特定Css属性的值
+getPropertyCSSValue(): 含两个属性, cssText为属性值, cssValueType 表示值的类型(0表示继承的值,1表示基本的值,2值列表,3自定义的值)
+removeProperty()
+setProperty(propertyName, value, priorty): priorty可为 important 或一个空字符串
+
+计算的样式: document.defaultView.getComputedStyle() 
+接受两个参数: 要取得计算样式的元素, 伪元素字符串(可以为null)
+返回一个CSSStyleDeclaration 对象,这个方法返回的对象,是包含其他样式表层叠而来并影响当前元素样式信息的
+
+ie不支持该方法,不过有一个 currentStyle属性,包含当前元素全部计算后的样式.
+style 中, border 是个综合属性(border-left-width, border-top-color等), 不一定能正确读取.
+
+
+7 操作样式表 - CSSStyleSheet 类型(包括<link> 和 <style>)
+通过 document.styleSheets[i] 来访问
+或直接用元素的属性  element.sheet(对ie则是  element.styleSheet)
+
+  css规则
+CSSRule 对象表示样式表中的每一条规则,是一个供其他多种类型继承的基类型,其中最常见的就是 CSSStyleRule 类型.
+CSSStyleRule 对象包含下列属性:
+cssText: 返回整条规则对应的文本
+selecotrText: 返回当前规则的选择符文本.
+style: 一个CSSStyleDeclaration 对象,可通过它设置和取得规则中特定的样式值.
+
+div.box{
+    background-color: blue;
+    width: 100px;
+    height: 20px;
+}
+
+var sheet = document.styleSheets[0];
+var rules = sheets.cssRules || sheet.rules;
+var rule = rules[0];                  // 取得第一条规则,即div.box的规则
+alert(rule.selectorText);             // div.box
+alert(rule.style.backgroundColor);    // blue
+
+  创建规则  insertRule()
+sheet.insertRule("body{background-color:silver}",0);      // 第二个参数是插入规则的位置
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+8  元素大小
+  偏移量
+  
 
 
 
