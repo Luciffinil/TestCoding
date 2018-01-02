@@ -612,21 +612,36 @@ filter: 每个NodeFilter对象只有一个方法-acceptNode();若应该访问给
 var filter = {
     acceptNode: function(node){
         return node.tagName.toLowerCase() == "p"?
-            NodeFilter.FILTER_ACCEPT :
-            NodeFilter.FILTER_SKIP;
+               NodeFilter.FILTER_ACCEPT :
+               NodeFilter.FILTER_SKIP;
     }
 };    
+也可以写成函数的形式
+var filter = function(node){
+        return node.tagName.toLowerCase() == "p"?
+               NodeFilter.FILTER_ACCEPT :
+               NodeFilter.FILTER_SKIP;
+};
+不过滤的情况,filter传入 null.
+var iterator = document.createNodeIterator(document, NodeFilter.SHOW_ALL, null, false);
+var root = iterator.nextNode();         // 第一次调用返回根节点
+iterator.previousNode();                // 返回上一个节点
 
 
+  TreeWalker 提供更多方法     document.createTreeWalker()
+parentNode() 
+firstChild()
+lastChild()
+nextSibling()
+previousSibling()
+
+filter参数: NodeFilter.FILTER_SKIP 跳过相应节点继续前进到子树中的下一个节点
+           NodeFilter.FILTER_REJECT 跳过相应节点及该节点的整个子树
+
+TreeWalker 还有一个属性: currentNode,表示任何遍历方法在上一次遍历中返回的节点
 
 
-
-
-
-
-
-
-
+10 范围: 通过范围可以选择文档中的一个区域,而不必考虑节点的界限(选择在后台完成,对用户不可见)
 
 
 
