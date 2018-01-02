@@ -567,12 +567,79 @@ sheet.insertRule("body{background-color:silver}",0);      // 第二个参数是�
 
 
 8  元素大小
-  偏移量
+确定文档总高度时, 一般使用 document.documentElement, 对混杂模式的ie,用document.body
+
+  偏移量 - 元素在屏幕上占用的所有可用的空间(包括内边距,滚动条,边框大小(不包括外边距))
+offsetHeight: 元素在垂直方向上占用的空间大小
+offsetWidth: 水平方向
+offsetLeft: 元素左外边框至包含元素的左内边框的像素距离
+offsetTop: 上
+
+offsetLeft, offsetTop 与包含元素有关, 包含元素的引用保存在 offsetParent 属性中. offsetParent 不一定等于 parentNode.
+
+偏移量只读,且每次访问都重新计算.因此应避免重复访问这些属性.如需重复访问,可以保存在局部变量中以提高性能.
+
+  客户区大小 - 元素内容及其内边距所占据的空间大小(不包括滚动条)
+clientWidth: 元素内容宽度+左右内边距宽度
+clientHeight: 内容高度 + 上下内边距高度
   
+  滚动大小 - 包含滚动内容的元素的大小
+有些元素(如<html>),自动添加滚动条. 其他的需要 css 的 overflow 属性设置才能滚动.  
+scrollHeight:
+scrollWidth:
+scrollLeft:
+scrollTop:
+
+
+9 遍历 - DOM遍历时深度优先,即移动的方向至少有两个; 任何节点都可以作为遍历的根节点
+
+  NodeIterator
+使用document.createNodeIterator()方法创建其实例,接受 4 个参数:
+root: 作为搜素起点的节点
+whatToShow: 表示要访问的哪些节点的代码
+filter: 一个NodeFilter对象,或一个表示接受还是拒绝某种特定节点的函数
+entityReferenceExpansion: 布尔值,表示是否要扩展实体引用. HTML页面中无用,其中实体引用不能扩展
+
+whatToShow:
+NodeFilter.SHOW_ALL
+NodeFilter.SHOW_ELEMENT
+NodeFilter.SHOW_TEXT
+NodeFilter.SHOW_ENTITYE
+除NodeFilter.SHOW_ALL,可以使用按位或来组合多个选项: var whatToShow = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
+
+filter: 每个NodeFilter对象只有一个方法-acceptNode();若应该访问给定节点,返回NodeFilter.FILTER_ACCEPT. 不访问则返回NodeFilter.FILTER_SKIP.
+例:只显示<p>元素的节点迭代器
+var filter = {
+    acceptNode: function(node){
+        return node.tagName.toLowerCase() == "p"?
+            NodeFilter.FILTER_ACCEPT :
+            NodeFilter.FILTER_SKIP;
+    }
+};    
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 
 
