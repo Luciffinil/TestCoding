@@ -646,8 +646,10 @@ document.createRange() 创造的是 Range 类型的实例，包含属性：
 startContainer： 选区中第一个节点的父节点
 startOffset： 若startContainer是文本节点，注释节点或CDATA节点，那startOffset就是范围起点之前跳过的字符数量。否则， startOffset就是范围中第一         个子节点的索引。
 endContainer： 选区中最后一个节点的父节点
-endOffset： 
+endOffset： 选区之外第一个字符或节点的位置
 commonAncestorContainer: startContainer 和 endContainer 共同的祖父节点在文档树种位置最深的那个
+  
+<p id="p1"><b>Hello</b> world!</p>  
   
   简单选择
 var range = document.createRange();
@@ -663,14 +665,34 @@ setEndAfter(refNode):
 
   复杂选择
 setStart()  setEnd()
-接受两个参数： 参照节点，偏移量值
+接受两个参数： 参照节点(确定container)，偏移量值(确定offset)
 
+  操作DOM范围的内容
+range.deleteContents();     // 在页面中删除所选范围的内容
+range.extractContents();    // 同样删除,不过会返回范围的文档片段
+range.cloneContents();      // 复制一份内容
 
+  插入DOM范围中的内容
+range.insertNode(span);     // 插入 span节点 到范围第一个节点之前  
+range.surroundContents(span);   // 环绕范围插入内容
 
+var p1 = document.getElementById("p1");
+         helloNode = p1.firstChild.firstChild;
+         range = document.createRange();
 
+range.selectNode(helloNode);
+var span = document.createElement("span");
+span.style.backgroundColor = "yellow";
+range.surroundContents(span);                
+// <p id="p1"><b><span style="background-color: yellow;">Hello</span></b> world!</p>
 
+range.insertNode(span);
+// <p id="p1"><b><span style="background-color: yellow;"></span>Hello</b> world!</p>
 
-
+  清理DOM范围
+使用完范围后,最好调用 detach() 方法 分离,然后解除引用.
+range.detach();
+range = null;
 
 
   
