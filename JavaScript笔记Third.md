@@ -642,9 +642,28 @@ TreeWalker 还有一个属性: currentNode,表示任何遍历方法在上一次�
 
 
 10 范围: 通过范围可以选择文档中的一个区域,而不必考虑节点的界限(选择在后台完成,对用户不可见)
+document.createRange() 创造的是 Range 类型的实例，包含属性：
+startContainer： 选区中第一个节点的父节点
+startOffset： 若startContainer是文本节点，注释节点或CDATA节点，那startOffset就是范围起点之前跳过的字符数量。否则， startOffset就是范围中第一         个子节点的索引。
+endContainer： 选区中最后一个节点的父节点
+endOffset： 
+commonAncestorContainer: startContainer 和 endContainer 共同的祖父节点在文档树种位置最深的那个
+  
+  简单选择
+var range = document.createRange();
+var p1 = document.getElementById("p1");
+range.selectNode(p1);             // p1为节点   选择整个节点
+range.selectNodeContent(p1);      // 只选择节点的子节点
 
+还可使用以下方法：
+setStartBefore(refNode): 将范围起点设置在refNode之前，即refNode是选区第一个子节点
+setStartAfter（refNode）： 将范围起点设置在refNode之后，即refNode的下一个同辈节点是选区第一个子节点
+setEndBefore(refNode):
+setEndAfter(refNode):
 
-
+  复杂选择
+setStart()  setEnd()
+接受两个参数： 参照节点，偏移量值
 
 
 
