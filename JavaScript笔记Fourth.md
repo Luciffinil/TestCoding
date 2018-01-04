@@ -214,7 +214,10 @@ appendChild()  replaceChild() 或 insertBefore()  触发 DOMNodeInserted 事件(
 
 
 14 HTML5事件
-    contextmenu事件
+    contextmenu事件 - 用于表示何时应该显示上下文菜单(冒泡),可以为 document指定一个事件处理程序
+使用 event.preventDefalut() 来取消显示默认右键菜单
+
+    
     
 
 
