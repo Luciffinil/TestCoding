@@ -217,8 +217,212 @@ appendChild()  replaceChild() 或 insertBefore()  触发 DOMNodeInserted 事件(
     contextmenu事件 - 用于表示何时应该显示上下文菜单(冒泡),可以为 document指定一个事件处理程序
 使用 event.preventDefalut() 来取消显示默认右键菜单
 
+function handler (event){
+    var div = document.getElementById("myDiv");
+    div.addEventListener("contextmenu", function(event){
+        event.preventDefault();
+
+        var menu = document.getElementById("myMenu");
+        menu.style.left = event.clientX + "px";
+        menu.style.top = event.clientY + "px";
+        menu.style.visibility = "visible";
+    },false);
+
+    document.addEventListener("click", function(event){
+        document.getElementById("myMenu").style.visibility = "hidden";
+    },false);
+
+}
+
+window.addEventListener("load", handler, false);
+
+    
+    beforeunload事件 - 将控制权交给用户,提醒是否关闭当前页面
+ 为了弹出对话框提醒用户,需要设置  event.returnValue 的值为 提示信息(对ie和firefox), 同时将提示信息作为函数的值返回(对 Safari和 Chrome).   
+
+
+    DOMContentLoaded事件 - 形成完整的Dom树后就触发,不理会图像,js文件,css文件或其他资源是否已下载完毕. 
+- 可以为document或window添加相应事件处理程序(目标实际上是document), 而load 的目标也是 document,不过必须在window上添加事件处理
+
+对于不支持 DOMContentLoaded事件的, 可以设置一个超时调用:
+setTimeout(function(){
+    // To Do
+},0);
+意思是在当前js处理完后立即执行该函数. 不过不能保证一定早于load事件被触发.
+
+    
+    readystatechange 事件 - 提供与文档或元素的加载状态有关的信息
     
     
+    pageshow 和 pagehide事件 
+- firefox和opera有个特性, 往返缓存(bfcache), 缓存着"后退""前进"的页面. 从bfcache中打开的页面不会触发load事件.
+- pageshow在页面显示时触发,无论是否来自bfcache. (pageshow目标是document,但必须添加到window上执行).
+- event.persisted 为true时表示 页面被保存在 bfcache.
+
+- pagehide会在 unload之前触发.目标是document,但必须添加到window上执行
+- 指定了 onunload 事件处理程序的页面会被自动排除在 bfcache 之外
+
+    haschange 事件 - 在url的参数列表以及url中"#"后面所有字符串 发生变化时通知开发人员
+- 必须添加给 window 对象
+- event.oldURL   event.newURL 分别保存变化前后完整的URL(firefox6+,chrome,opera支持)
+  不支持时可以使用 location.hash 来确定当前参数列表
+    
+
+15 设备事件
+
+    orientationchange事件(ios) - 旋转事件
+window.orientation  0表示正常竖向,90表示实体按钮在右边的横屏模式,-90表示实体按钮在左的横屏    
+    
+    MozOrientation事件(firefox) - 检测移动设备方向变化
+event.x event.y event.z  都介于 -1 和 1 之间
+
+    deviceorientation事件
+
+    devicemotion事件
+
+
+16 触摸与手势事件
+    触摸事件
+touchstart: 手指触摸屏幕时触发.即使已有一个手指放在屏幕上也会触发.
+touchmove: 手指在屏幕上滑动时连续地触发. 事件发生期间,调用 preventDefault() 可以阻止滚动.
+touchend: 手指从屏幕上移开时触发
+touchcancel: 系统停止跟踪触摸时触发. 
+以上会冒泡,也都可以取消.
+
+    手势事件 - 只有两个手指都触摸到事件的接受容器时才会触发这些事件
+gesturestart: 当一个手指已经按在屏幕上而另一个手指又触摸屏幕时触发
+gesturechange: 当触摸屏幕的任何一个手指位置发生变化时
+gestureend: 当任何一个手指从屏幕上面移开时触发
+
+
+17 内存与性能
+Js中,添加到页面上的事件处理程序数量将直接关系到一名的整体运行性能. 因为每个函数都是对象,都占用内存. 其次,事先指定所有事件处理程序而导致的DOM访问次数,会延迟整个页面的交互就绪时间.
+
+    事件委托 - 利用事件冒泡,只指定一个事件处理程序,就可以管理某一类型的所有事件
+<ul id="myLinks">
+    <li id="go">Go</li>
+    <li id="do">Do</li>
+    <li id="say">Say</li>
+</ul>    
+    
+var list = document.getElementById("myLinks");
+
+list.addEventListener("click", function(event){
+    switch(target.id){                                      // 通过 target 的不同选择不同的响应事件
+        case "go":
+            // to do
+            break;
+            
+        case "do":
+            // to do
+            break;
+            
+        case "say":
+            // to do
+            break;
+    }
+}, false);
+
+最适合采用此种方式的包括  click,mousedown,mouseup,keydown,keyup,keypress
+
+    
+    移除事件处理程序
+- 删除按钮前 移除事件处理程序(例如: btn.onclick = null).
+- 事件处理程序中删除按钮能阻止事件冒泡.
+
+
+18 模拟事件 - 测试web应用时极其有用
+createEvent()
+initMouseEvent() / initKeyEvent()
+dispatchEvent()
+
+
+
+
+第14章   表单脚本
+Js中, 表单对应 HTMLFormElement 类型, 继承了 HTMLElement.
+
+1 提交表单
+<input type="submit" value="Submit Form">
+
+<button type="submit">Submit Form</button>
+
+<input type="image" src="graphic.gif">
+
+调用事件处理可以验证表单数据:
+var form = document.getElementById("myForm");
+form.addEventListener("submit", function(event){
+    // to do
+}, false);
+
+也可直接调用submit()方法提交
+form.submit();
+
+
+2 重置表单
+<input type="reset" value="Reset Form">
+
+<button type="reset">Reset Form</button>
+
+
+3 表单字段
+表单有 elements 属性, 是表单中所有元素的集合. 这个elements集合是一个有序列表,包含表单中的所有字段(顺序与它们出现在标记中的顺序相同). 可以按照位置和name特性来访问它们.
+var form = document.getElementById("form1");
+var field1 = form.elements[0];
+var fieldCount = form.element.length;
+var fieldColor = form.elements["color"];
+
+如果多个表单控件都在使用一个 name, 那么就会返回以该name命名的一个 NodeList.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
