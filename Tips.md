@@ -43,3 +43,21 @@ class Solution {
 	}
 }
 ```
+
+# 3 WEB中URL的相对路径
+
+```JavaScript
+相对路径有两种格式
+
+第一种：不以“/"开头，基于当前网页所在目录和相对路径构建URL
+
+<a href="b.html">link</a>
+
+URL = "http://www.ipo.com/w" + "b.html"
+
+第二种：以“/”开头，基于当前域和相对路径构建URL
+
+<a href="/w/b.html">link</a>
+
+URL = "http://www.ipo.com" + "/w/b.html"
+```
