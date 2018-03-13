@@ -1,0 +1,12 @@
+MyBatis 批量操作
+
+SqlSession sqlSession = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
+for(int i=0;i<newlist.size();i++){
+  OrganRole or = new OrganRole();
+  sqlSession.insert("auth.organRole.insert", or);
+  if((i+1)%1000==0){
+    sqlSession.flushStatements();
+  }
+}
+sqlSession.flushStatements();
+sqlSession.close();
