@@ -10,3 +10,14 @@ for(int i=0;i<newlist.size();i++){
 }
 sqlSession.flushStatements();
 sqlSession.close();
+
+
+Oracle数据库地址
+C:/ORACLE/jli/product/11.2.0/client_1/Network/Admin/tnsnames.ora
+
+Mysql
+jdbc:mysql://localhost:3306/test?characterEncoding=utf8
+jdbc:mysql:// 是指JDBC连接方式；
+localhost: 是指你的本机地址；
+3306 SQL数据库的端口号；
+test 就是你要连接的数据库的地址。
