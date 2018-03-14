@@ -21,3 +21,5 @@ jdbc:mysql:// 是指JDBC连接方式；
 localhost: 是指你的本机地址；
 3306 SQL数据库的端口号；
 test 就是你要连接的数据库的地址。
+
+# 3 DispatchServlet
