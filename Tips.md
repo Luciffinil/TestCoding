@@ -61,3 +61,52 @@ URL = "http://www.ipo.com/w" + "b.html"
 
 URL = "http://www.ipo.com" + "/w/b.html"
 ```
+
+# 4 反射机制获取并修改私有属性方法
+```java
+public class PrivateClass2
+{
+    private String name = "zhangsan";
+    
+    private String sayHello(String name)
+    {
+        return "Hello: " + name;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+}
+```
+
+```java
+import java.lang.reflect.Field;
+
+public class TestPrivate2
+{
+    public static void main(String[] args) throws Exception
+    {
+        PrivateClass2 p = new PrivateClass2();
+        Class<?> classType = p.getClass();
+
+        Field field = classType.getDeclaredField("name");
+
+        field.setAccessible(true); // 抑制Java对修饰符的检查，如果不加 set 的时候会报错
+        field.set(p, "lisi");
+
+        System.out.println(p.getName());
+	
+	// 获取Method对象
+        Method method = classType.getDeclaredMethod("sayHello",
+                new Class[] { String.class });
+
+        method.setAccessible(true); // 抑制Java的访问控制检查
+        // 如果不加上上面这句，将会Error: TestPrivate can not access a member of class PrivateClass with modifiers "private"
+	
+        String str = (String) method.invoke(p, new Object[] { "zhangsan" });
+
+        System.out.println(str);
+    }
+}
+```
