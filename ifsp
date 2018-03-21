@@ -23,3 +23,8 @@ localhost: 是指你的本机地址；
 test 就是你要连接的数据库的地址。
 
 # 3 DispatchServlet
+
+
+# 4 Holder, Interface, AbstractClass, BizClass
+
+# 5 property, File
