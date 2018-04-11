@@ -110,3 +110,11 @@ public class TestPrivate2
     }
 }
 ```
+
+# 5 \r \n 区别与联系
+
+\r 回车，光标回到当前行首  
+\n 换行，光标移动到下一行  
+Windows，每行结尾是 \r\n
+Unix, 每行结尾是\n
+Mac， 每行结尾是\r
