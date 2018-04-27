@@ -58,6 +58,12 @@ test 就是你要连接的数据库的地址。
   
 由于该插件与osgi的某种冲突，打包会提示错误，不过仍能得到源码包。不过有意义错误，导致包内的配置文件MANIFEST.MF出现错误，需要手动更正。
 
-# 7 部署一个bundle到OSGI项目中
-a. 新建一个 plug-in project
-b. 
+# 7 部署一个bundle到OSGI项目中（以 javadbf 为例）
+a. 新建一个 plug-in project,准备好代码放入。
+b. 编辑 pom.xml 文件。在该pom中添加 parent，内容为com.pye.bundle.parent，版本号统一放入 com.pye.bundle.parent 中。 
+   parent 的 pom 中，proerties 添加 javadbf.version， dependencies 添加 Javadbf 的依赖。
+c. 修改 MANIFEST.MF, Export-Package 添加实际使用的包 com.linuxense.javadbf.
+d. 将eclipse中的该工程删除，不删除本地文件。将文件移动到osgi的目录下。
+e. 修改依赖于javadbf的工程的pom. 本例中为 com.pye.ifsp.valuation, 添加javadbf的依赖。
+f. 在valuation的 MANIFEST.MF 的 Require-Bundle 中添加 javadbf.
+g. 修改 ifsp-web 项目中的 config.ini. 增加 com.pye.bundle.com.linuxense.javadbf@start,\ 作用是部署到weblogic后，会自动启动。
