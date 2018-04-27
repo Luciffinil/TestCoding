@@ -28,3 +28,6 @@ test 就是你要连接的数据库的地址。
 # 4 Holder, Interface, AbstractClass, BizClass
 
 # 5 property, File
+
+# 6 Maven项目获取源码
+在某一个Maven项目中的POM.xml文件中加入：
