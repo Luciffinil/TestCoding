@@ -31,3 +31,32 @@ test 就是你要连接的数据库的地址。
 
 # 6 Maven项目获取源码
 在某一个Maven项目中的POM.xml文件中加入：
+```
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-source-plugin</artifactId>
+      <version>2.2.1</version>
+      <configuration>
+        <attach>true</attach>
+      </configuration>
+      <executions>
+        <execution>
+          <phase>compile</phase>
+          <goals>
+            <goal>jar<goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+```
+
+之后进行mvn clean install，之后目标项目文件夹内 target 文件夹中，会出现 ...-source.jar 的源码包。之后将该包加入plugins-ifsp。  
+  
+由于该插件与osgi的某种冲突，打包会提示错误，不过仍能得到源码包。不过有意义错误，导致包内的配置文件MANIFEST.MF出现错误，需要手动更正。
+
+# 7 部署一个bundle到OSGI项目中
+a.
