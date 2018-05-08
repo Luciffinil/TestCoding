@@ -40,6 +40,39 @@ DEQUEUE(Q)
 ```
 
 # 3 链表
+双链表L，每个元素都是一个对象，每个对象包含一个关键字域(key)和两个指针域：next 和 prev。  
+对某个元素x, 若prev[x]=NIL,表示x没有前驱结点,为链表第一个元素,即头(head). 若next[x]=NIL,表示x没有后继结点,为链表最后一个元素,即尾(tail).  
+head[L]指向表的第一个元素. 若head[L]=NIL,则链表为空.  
+```
+LIST-SEARCH(L, k)
+x <- head[L]
+while x != NIL  and key[x] != k
+  do x <- next[x]
+return x
+
+LIST-INSERT(L, x)
+next[x] <- head[L]
+if head[L] != NIL
+  then prev[head[L]] <- x
+head[L] <- x
+prev[x] <- NIL
+
+LIST-DELETE(L, x)
+if prev[x] != NIL
+  then 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
