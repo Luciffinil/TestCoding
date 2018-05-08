@@ -59,7 +59,10 @@ prev[x] <- NIL
 
 LIST-DELETE(L, x)
 if prev[x] != NIL
-  then 
+  then next[prev[x]] <- next[x]
+else head[L] <- next[x]
+if next[x] != NIL
+  then prev[next[x]] <- prev[x]
 
 
 
