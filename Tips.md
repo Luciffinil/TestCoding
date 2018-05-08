@@ -192,4 +192,14 @@ class AlarmDoor extends Door implements Alarm {
 ```
 
 
+# 7 前端事件阻止 (preventDefault 和 stopPropagation)
+
+
+
+
+
+
+
+
+
 
