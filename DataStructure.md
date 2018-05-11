@@ -224,4 +224,68 @@ return NIL
   例如: h1(k)= k mod m, h2(k) = 1+(k mod m'). 其中 m' 略小于 m (如 m-1).  
   用了 O(m^2) 种探查序列.  
   
+  2-2-4 完全散列
+利用一种两级的散列方案,每一级上都采用全域散列.第一级利用某一散列函数 h,将 n 个关键字散列到 m 个槽中. 然后在散列到槽 j 中的关键字, 建立一个较小的二次散列表 Sj, 与其相关的散列函数为 hj. 为了确保第二级上不出现碰撞,需要让散列表 Sj 的大小 mj 为散列到槽 j 中的关键字数 nj 的平方.  
 
+# 3-1 二叉查找树
+对一颗 n 个结点的二叉查找树, 随机构造的树期望高度为 O(lg n),从而此树上基本动态集合操作的平均时间为 O(lg n).  
+每个结点都是一个对象,除了 key 域和卫星数据外, left,right,p 分别指向左儿子,右儿子,父结点.  
+二叉查找树, 对于结点x, 左子树的关键字最大不超过 key[x], 右子树关键字最小不小于 key[x].  
+前序遍历: 中左右   中序遍历: 左中右    后序遍历: 左右中   
+```
+INORDER-TREE-WALK(x)
+if x != NIL
+  then INORDER-TREE-WALK(left[x])
+       print key[x]
+       INORDER-TREE-WALK(right[x])
+```
+
+# 3-2  查询二叉查找树
+```
+TREE-SEARCH(x,k)
+if x = NIL or k = key[x]
+  then return x
+if k < key[x]
+  then return TREE-SEARCH(left[x],k)
+else
+  return TREE-SEARCH(right[x],k)
+  
+ITERATIVE-TREE-SEARCH(x,k)
+while x != NIL and k != key[x]
+  do if k < key[x]
+    then x <- left[x]
+  else
+    x <- right[x]
+return x    
+```
+
+# 3-3 最大关键字元素和最小关键字元素
+```
+TREE-MINIMUM(x)
+while left[x] != NIL
+  do x <- left[x]
+return x  
+
+TREE-MAXIMUM(x)
+while right[x] != NIL
+  do x <- right[x]
+return x  
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
