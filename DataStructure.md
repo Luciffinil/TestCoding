@@ -240,7 +240,7 @@ if x != NIL
        INORDER-TREE-WALK(right[x])
 ```
 
-# 3-2  查询二叉查找树
+  3-1-1  查询二叉查找树
 ```
 TREE-SEARCH(x,k)
 if x = NIL or k = key[x]
@@ -259,7 +259,7 @@ while x != NIL and k != key[x]
 return x    
 ```
 
-# 3-3 最大关键字元素和最小关键字元素
+ 3-1-2 最大关键字元素和最小关键字元素
 ```
 TREE-MINIMUM(x)
 while left[x] != NIL
@@ -272,6 +272,19 @@ while right[x] != NIL
 return x  
 ```
 
+  3-1-3 前趋和后继
+某一结点x的后继: 大于 key[x] 的最小者所在的结点  
+```
+TREE-SUCCESSOR(x)
+if right[x] != NIL 
+  then return TREE-MINIMUM(right[x])
+y <- p[x]
+while y != NIL and x = right[y]
+  do x <- y
+     y <- p[y]
+return y
+  
+```
 
 
 
