@@ -272,25 +272,79 @@ while right[x] != NIL
 return x  
 ```
 
-  3-1-3 前趋和后继
+  3-1-3 前趋和后继  
 某一结点x的后继: 大于 key[x] 的最小者所在的结点  
 ```
 TREE-SUCCESSOR(x)
-if right[x] != NIL 
+if right[x] != NIL                              // 第一种情况, x 有右子树
   then return TREE-MINIMUM(right[x])
-y <- p[x]
-while y != NIL and x = right[y]
-  do x <- y
+y <- p[x]                                       // 第二种情况, x 无右子树,且 x 是父结点的左孩子,或父结点为NIL
+while y != NIL and x = right[y]                 // 第二种情况, x 无右子树,且 x 是父结点的右孩子
+do x <- y
      y <- p[y]
 return y
   
 ```
 
+某一结点x的前趋: 小于 key[x] 的最大者所在的结点  
+```
+TREE-PREDECESSOR(x)
+if left[x] != NIL                              // 第一种情况, x 有左子树
+  then return TREE-MAXIMUM(left[x])
+y <- p[x]                                      // 第二种情况, x 无右子树,且 x 是父结点的右孩子,或父结点为NIL
+while y != NIL and x = left[y]                 // 第二种情况, x 无右子树,且 x 是父结点的左孩子
+do x <- y
+   y <- p[y]
+return y
+```
 
+  3-1-4 插入和删除  
+```
+TREE-INSERT(T,z)
+y <- NIL
+x <- root[T]
+while x != NIL
+  do y <- x
+     if key[z] < key[x]
+      x <- left[x]
+     else
+      x <- right[x]
+p[z] <- y
+if y = NIL
+  root[T] <- z
+else
+  if key[z] < key[y]
+    left[y] <- z
+  else 
+    right[y] <- z
+```
+```
+TREE-DELETE(T,z)
+if left[z] = NIL or right[z] = NIL
+  y <- z
+else 
+  y <- TREE-SUCCESSOR(z)
+  
+if left[y] != NIL
+  x <- left[y]
+else
+  x <- right[y]
+  
+if x != NIL
+  p[x] <- p[y]
 
+if p[y] = NIL
+  root[T] <- x
+else if y = left[p[y]]
+       left[p[y]] <- x
+     else
+       right[p[y]] <- x
 
-
-
+if y != x
+  key[z] <- key[y]
+  copy y's satellite data into z
+return y
+```
 
 
 
