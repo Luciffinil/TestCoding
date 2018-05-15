@@ -239,6 +239,7 @@ if x != NIL
        print key[x]
        INORDER-TREE-WALK(right[x])
 ```
+二叉查找树的基础操作时间复杂度为 O(h).
 
   3-1-1  查询二叉查找树
 ```
@@ -303,8 +304,8 @@ return y
 TREE-INSERT(T,z)
 y <- NIL
 x <- root[T]
-while x != NIL
-  do y <- x
+while x != NIL                  // 找到适合的结点放置z, 以 y 记录该位置
+  do y <- x
      if key[z] < key[x]
       x <- left[x]
      else
@@ -320,33 +321,131 @@ else
 ```
 ```
 TREE-DELETE(T,z)
-if left[z] = NIL or right[z] = NIL
-  y <- z
+if left[z] = NIL or right[z] = NIL        // 选择需要更改的结点 y,当z没有孩子或只有一个孩子时,操作z本身.当z有两个孩子时,需要操作z的后继
+  y <- z
 else 
   y <- TREE-SUCCESSOR(z)
   
-if left[y] != NIL
-  x <- left[y]
+if left[y] != NIL                         // x 最多只有一个孩子.若z只有一个孩子或没有,则y即z. 若z有两个孩子,其后继不可能有左孩子.
+  x <- left[y]
 else
   x <- right[y]
   
-if x != NIL
-  p[x] <- p[y]
+if x != NIL                               // 将 x 连上 y 的父结点
+  p[x] <- p[y]
 
 if p[y] = NIL
-  root[T] <- x
-else if y = left[p[y]]
-       left[p[y]] <- x
+  root[T] <- x                            
+else if y = left[p[y]]                    // 将 y 父结点指向 x
+       left[p[y]] <- x
      else
        right[p[y]] <- x
 
-if y != x
-  key[z] <- key[y]
+if y != x                                 // 只有 z 有两个孩子时实际起作用.将 z 替换为 y, y从原位置删除,来到 z 的位置
+  key[z] <- key[y]
   copy y's satellite data into z
 return y
 ```
 
+# 4 红黑树的性质
+红黑树是平衡查找树的一种, 在最坏情况下, 基本的动态集合操作时间为 O(lg n).  
+每个结点增加一个存储位表示结点颜色(RED/BLACK),任一条从根到叶子的路径不会比任何其他路径长出两倍,接近平衡.  
+每个结点五个域: color, key, left, right, p.  
+内结点: 除叶子结点之外所有结点  
+使用哨兵 nil[T] 来取代所有 key 为 NIL 的空结点,这样使得 NIL 看起来像一个普通结点  
+从某结点出发(不包括该结点)到达一个叶结点的任意一条路径,黑色结点的个数称为该结点 x 的黑高度, bh(x).  
+  
+红黑性质:   
+- 每个结点或红或黑
+- 根节点是黑
+- 每个叶结点(NIL)是黑
+- 若一个结点为红,则它两个儿子都是黑
+- 对每个结点,从该结点到其子孙结点的所有路径上都包含相同数目的黑色结点  
+  
+一棵有 n 个内结点的红黑树的高度至多为 2lg(n+1).  
 
+  4-1 旋转
+```
+LEFT-ROTATE(T,x)          // 左旋右孩子不为 nil[T]
+y <- right[x]
+right[x] <- left[y]       // y 左孩子给 x
+p[left[y]] <- x
+
+p[y] <- p[x]              // 确定 y 的位置
+if p[x] = nil[T]
+  root[T] <- y
+else if x = left[p[x]]
+       left[p[x]] <- y
+     else 
+       right[p[x]] <- y
+
+left[y] <- x              // 确定 x 的位置
+p[x] <- y
+
+```
+```
+RIGHT-ROTATE(T,x)          // 右旋左孩子不为 nil[T]
+y <- left[x]
+left[x] <- right[y]       // y 右孩子给 x
+p[right[y]] <- x
+
+p[y] <- p[x]              // 确定 y 的位置
+if p[x] = nil[T]
+  root[T] <- y
+else if x = left[p[x]]
+       left[p[x]] <- y
+     else 
+       right[p[x]] <- y
+
+right[y] <- x              // 确定 x 的位置
+p[x] <- y
+```
+
+  4-2 插入  
+```
+RB-INSERT(T,z)
+y <- nil[T]
+x <- root[T]
+while x != nil[T]
+  do y <- x
+  if key[z] < key[x]
+    x <- left[x]
+  else
+    x <- right[x]
+p[z] <- y
+if y = nil[T]
+  root[T] <- z
+else if key[z] < key[y]
+       left[y] <- z 
+     else
+       right[y] <- z
+left[z] <- nil[T]
+right[z] <- nil[T]
+color[z] <- RED
+RB-INSERT-FIXUP(T,z)      // 由于新加入的结点,需要进行红黑树的重排
+```
+
+对于插入的重排,性质2可能被破坏(若插入的z为根结点),性质4可能被破坏(若z的父结点为红)
+```
+RB-INSERT-FIXUP(T,z)
+while color[p[z]] = RED              // 若z父结点为黑,不需重排. 因此首先 z 的父结点一定是 RED 才进行处理
+  if p[z] = left[p[p[z]]]            // 这种 if 的两种情况是对称的
+    y <- right[p[p[z]]]              // 取 y 为 z 的叔结点
+    if color[y] = RED                // CASE1: 父结点 RED,叔结点 RED. 将父与叔结点置为 Black, 祖父结点置为 Red
+      color[p[z]] <- BLACK
+      color[y] <- BLACk
+      color[p[p[x]]] <- RED
+      z <- p[p[z]]                    // 指针 z 上移两层
+    else if z = right[p[z]]           // CASE2: 父结点 RED,叔结点 BLACK,z 是右孩子. 将 z 转变为 左孩子
+           z <- p[z]
+           LEFT-ROTATE(T,z)
+         color[p[z]] <- BLACK
+         color[p[p[z]]] <- RED
+         RIGHT- ROTATE(T, p[p[z]])
+  else 
+color[root[T]] <- BLACK 
+
+```
 
 
 
