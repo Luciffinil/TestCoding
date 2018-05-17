@@ -459,7 +459,16 @@ color[root[T]] <- BLACK               // z 为根结点的情况
 
 ```
 
-
+  4-3 删除  
+```
+RB-DELETE(T,z)
+if left[z] = nil[T] or right[z] = nil[T]
+  y <- z
+else
+  y <- TREE-SUCCESSOR(z)
+if left[y] != nil[T]
+  `
+```
 
 
 
