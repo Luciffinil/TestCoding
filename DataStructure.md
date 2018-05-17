@@ -428,7 +428,7 @@ RB-INSERT-FIXUP(T,z)      // 由于新加入的结点,需要进行红黑树的
 对于插入的重排,性质2可能被破坏(若插入的z为根结点),性质4可能被破坏(若z的父结点为红)
 ```
 RB-INSERT-FIXUP(T,z)
-while color[p[z]] = RED              // 若z父结点为黑,不需重排. 因此首先 z 的父结点一定是 RED 才进行处理
+while color[p[z]] = RED              // 若 z 父结点为黑,不需重排. 因此首先 z 的父结点一定是 RED 才进行处理
   if p[z] = left[p[p[z]]]            // 这种 if 的两种情况是对称的
     y <- right[p[p[z]]]              // 取 y 为 z 的叔结点
     if color[y] = RED                // CASE1: 父结点 RED,叔结点 RED. 将父与叔结点置为 Black, 祖父结点置为 Red
@@ -439,11 +439,23 @@ while color[p[z]] = RED              // 若z父结点为黑,不需重排. �
     else if z = right[p[z]]           // CASE2: 父结点 RED,叔结点 BLACK,z 是右孩子. 将 z 转变为 左孩子
            z <- p[z]
            LEFT-ROTATE(T,z)
-         color[p[z]] <- BLACK
-         color[p[p[z]]] <- RED
-         RIGHT- ROTATE(T, p[p[z]])
-  else 
-color[root[T]] <- BLACK 
+         color[p[z]] <- BLACK         // CASE3: 父结点 RED,叔结点 BLACK,z 是左孩子.
+         color[p[p[z]]] <- RED
+         RIGHT- ROTATE(T, p[p[z]])    // 此时由于 z 的父结点已为 BLACK, 因此无需再进入 while,重排完成
+  else                                // 以下为对称的三种情况
+    y <- left[p[p[z]]]                // 取 y 为 z 的叔结点
+    if color[y] = RED                 // CASE4: 父结点 RED,叔结点 RED. 将父与叔结点置为 Black, 祖父结点置为 Red
+      color[p[z]] <- BLACK 
+      color[y] <- BLACk
+      color[p[p[x]]] <- RED
+      z <- p[p[z]]                    // 指针 z 上移两层, 因为祖父结点变红,还需继续进入 while 检查
+    else if z = left[p[z]]           // CASE5: 父结点 RED,叔结点 BLACK,z 是左孩子. 将 z 转变为 右孩子
+           z <- p[z]
+           RIGHT-ROTATE(T,z)
+         color[p[z]] <- BLACK         // CASE6: 父结点 RED,叔结点 BLACK,z 是右孩子.
+         color[p[p[z]]] <- RED
+         LEFT- ROTATE(T, p[p[z]])    // 此时由于 z 的父结点已为 BLACK, 因此无需再进入 while,重排完成
+color[root[T]] <- BLACK               // z 为根结点的情况
 
 ```
 
