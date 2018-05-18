@@ -467,8 +467,50 @@ if left[z] = nil[T] or right[z] = nil[T]
 else
   y <- TREE-SUCCESSOR(z)
 if left[y] != nil[T]
-  `
+  x <- left[y]
+else
+  x <- right[y]
+p[x] <- p[y]                            // 无条件保存y的父亲,用于之后的调整
+if p[y] = nil[T]  
+  root[T] <- x
+else if y = left[p[y]]
+       left[p[y]] <- x
+     else
+       right[p[y]] <- x
+if y!=z
+  key[z] <- key[y]
+  coly y's statellite data into z
+if color[y] = BLACK                     // 若 y 为 RED, 则不影响红黑性质
+  RB-DELETE-FIXUP(T,x)
+return y
 ```
+```
+RB-DELETE-FIXUP(T,x)
+while x != root[T] and color[x] = BLACK
+  if x = left[p[x]]
+    w <- right[p[x]]
+    if color[w]= RED
+      color[w] <- BLACK
+      color[p[x]] <- RED
+      LEFT-ROTATE(T,p[x])
+      w <- right[p[x]]
+    if color[left[w]] = BLACK and color[right[w]] = BLACK
+      color[w] <- RED
+      x <- p[x]
+    else if color[right[w]] = BLACK
+           color[w] <- RED
+           RIGHT-ROTATE(T,w)
+           w <- right[p[x]]
+         color[w] <- color[p[x]]
+         color[p[x]] <- BLACK
+         color[right[w]] <- BLACK
+         LEFT-ROTATE(T,p[x]])
+         x <- root[T]
+  else
+color[x] <- BLACK  
+      
+```
+
 
 
 
