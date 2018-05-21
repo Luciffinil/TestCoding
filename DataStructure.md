@@ -341,9 +341,9 @@ else if y = left[p[y]]                    // 将 y 父结点指向 x
      else
        right[p[y]] <- x
 
-if y != x                                 // 只有 z 有两个孩子时实际起作用.将 z 替换为 y, y从原位置删除,来到 z 的位置
-  key[z] <- key[y]
-  copy y's satellite data into z
+if y != z                                 // (只有 z 有两个孩子时实际起作用)将 z 替换为 y, y从原位置删除,来到 z 的位置,但不包括颜色0
+  key[z] <- key[y]                        // z 仍保留自己的颜色,不复制 y 的颜色
+  copy y's satellite data into z
 return y
 ```
 
@@ -479,30 +479,34 @@ else if y = left[p[y]]
        right[p[y]] <- x
 if y!=z
   key[z] <- key[y]
-  coly y's statellite data into z
-if color[y] = BLACK                     // 若 y 为 RED, 则不影响红黑性质
+  copy y's statellite data into z
+if color[y] = BLACK                     // (z 仍为自己原来的颜色) 若 y 为 RED, 则不影响红黑性质. 
   RB-DELETE-FIXUP(T,x)
 return y
 ```
+有可能破坏:
+性质2 - y 是根结点,而 y 的一个红孩子成了新的根
+性质4 - x 和 p[y] 都是 RED
+性质1 - y 被删除导致所有包含 y 的路径黑结点个数少1,因此将 x 视为双重黑色(color 为 BLACK)或红黑色(color 为 RED)来解决这个问题
 ```
-RB-DELETE-FIXUP(T,x)
-while x != root[T] and color[x] = BLACK
-  if x = left[p[x]]
-    w <- right[p[x]]
-    if color[w]= RED
-      color[w] <- BLACK
+RB-DELETE-FIXUP(T,x)                                                   // 若 x 为红色,不进入循环,直接将 x 变为 BLACK, 即可解决问题
+while x != root[T] and color[x] = BLACK                                // x 始终指向具有双重黑色的非根结点
+  if x = left[p[x]]
+    w <- right[p[x]]                                                   // w 为 x 兄弟结点
+    if color[w]= RED                                                   // CASE1: x 为 BLACK, w 为 RED
+      color[w] <- BLACK
       color[p[x]] <- RED
       LEFT-ROTATE(T,p[x])
       w <- right[p[x]]
-    if color[left[w]] = BLACK and color[right[w]] = BLACK
-      color[w] <- RED
+    if color[left[w]] = BLACK and color[right[w]] = BLACK             // CASE2: x,w 为 BLACK, 且 w 两个孩子都为 BLACK
+      color[w] <- RED
       x <- p[x]
-    else if color[right[w]] = BLACK
-           color[w] <- RED
+    else if color[right[w]] = BLACK                                   // CASE3: x,w 为 BLACK, 且 w 右孩子 BLACK, 左孩子 RED
+           color[w] <- RED
            RIGHT-ROTATE(T,w)
            w <- right[p[x]]
-         color[w] <- color[p[x]]
-         color[p[x]] <- BLACK
+         color[w] <- color[p[x]]                                      // CASE4: x,w 为 BLACK, 且 w 右孩子 RED
+         color[p[x]] <- BLACK
          color[right[w]] <- BLACK
          LEFT-ROTATE(T,p[x]])
          x <- root[T]
