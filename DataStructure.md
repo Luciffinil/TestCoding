@@ -488,29 +488,49 @@ return y
 性质2 - y 是根结点,而 y 的一个红孩子成了新的根
 性质4 - x 和 p[y] 都是 RED
 性质1 - y 被删除导致所有包含 y 的路径黑结点个数少1,因此将 x 视为双重黑色(color 为 BLACK)或红黑色(color 为 RED)来解决这个问题
-```
-RB-DELETE-FIXUP(T,x)                                                   // 若 x 为红色,不进入循环,直接将 x 变为 BLACK, 即可解决问题
-while x != root[T] and color[x] = BLACK                                // x 始终指向具有双重黑色的非根结点
+```                                                     
+RB-DELETE-FIXUP(T,x)                                                 // 若 x 为红色,不进入循环,直接将 x 变为 BLACK, 即可解决问题
+while x != root[T] and color[x] = BLACK                              // x 始终指向具有双重黑色的非根结点
   if x = left[p[x]]
-    w <- right[p[x]]                                                   // w 为 x 兄弟结点
-    if color[w]= RED                                                   // CASE1: x 为 BLACK, w 为 RED
-      color[w] <- BLACK
-      color[p[x]] <- RED
-      LEFT-ROTATE(T,p[x])
-      w <- right[p[x]]
-    if color[left[w]] = BLACK and color[right[w]] = BLACK             // CASE2: x,w 为 BLACK, 且 w 两个孩子都为 BLACK
-      color[w] <- RED
-      x <- p[x]
-    else if color[right[w]] = BLACK                                   // CASE3: x,w 为 BLACK, 且 w 右孩子 BLACK, 左孩子 RED
-           color[w] <- RED
+    w <- right[p[x]]                                                 // w 为 x 兄弟结点
+    if color[w]= RED                                                 // CASE1: x 为 BLACK, w 为 RED, p[x] 为 BLACK. 转化为2/3/4.
+      color[w] <- BLACK                                               
+      color[p[x]] <- RED                                            
+      LEFT-ROTATE(T,p[x])                                             
+      w <- right[p[x]]                                               // w 原来是 RED,所有其两个孩子必然是 BLACK, 所以现在的 w 为 BLACK
+    if color[left[w]] = BLACK and color[right[w]] = BLACK            // CASE2: x,w 为 BLACK, 且 w 两个孩子都为 BLACK
+      color[w] <- RED                                                // 将p[x] 右子树黑高减少1
+      x <- p[x]                                                      // p[x]的左右子树黑高都少1,因此需求的额外 BLACK 上移一层
+    else if color[right[w]] = BLACK                                  // CASE3: x,w 为 BLACK, 且 w 右孩子 BLACK, 左孩子 RED. 转化为4
+           color[left[w]] <- BLACK
+           color[w] <- RED
            RIGHT-ROTATE(T,w)
            w <- right[p[x]]
-         color[w] <- color[p[x]]                                      // CASE4: x,w 为 BLACK, 且 w 右孩子 RED
-         color[p[x]] <- BLACK
-         color[right[w]] <- BLACK
-         LEFT-ROTATE(T,p[x]])
-         x <- root[T]
-  else
+         color[w] <- color[p[x]]                                     // CASE4: x,w 为 BLACK, 且 w 右孩子 RED
+         color[p[x]] <- BLACK                                        // 左旋后左子树增加一个黑结点,黑高加1
+         color[right[w]] <- BLACK                                    // 左旋后保证右子树黑高不变
+         LEFT-ROTATE(T,p[x]])                                        // 左旋为 左子树 增加一个结点, 即为原来的 p[x]
+         x <- root[T]                                                // 到这一步,已完成调整,可以结束循环
+  else
+    w <- left[p[x]]                                                  // w 为 x 兄弟结点
+    if color[w]= RED                                                 // CASE1: x 为 BLACK, w 为 RED, p[x] 为 BLACK. 转化为2/3/4.
+      color[w] <- BLACK                                               
+      color[p[x]] <- RED                                            
+      RIGHT-ROTATE(T,p[x])                                             
+      w <- left[p[x]]                                               // w 原来是 RED,所有其两个孩子必然是 BLACK, 所以现在的 w 为 BLACK
+    if color[left[w]] = BLACK and color[right[w]] = BLACK            // CASE2: x,w 为 BLACK, 且 w 两个孩子都为 BLACK
+      color[w] <- RED                                                // 将p[x] 右子树黑高减少1
+      x <- p[x]                                                      // p[x]的左右子树黑高都少1,因此需求的额外 BLACK 上移一层
+    else if color[right[w]] = BLACK                                  // CASE3: x,w 为 BLACK, 且 w 右孩子 BLACK, 左孩子 RED. 转化为4
+           color[left[w]] <- BLACK
+           color[w] <- RED
+           RIGHT-ROTATE(T,w)
+           w <- right[p[x]]
+         color[w] <- color[p[x]]                                     // CASE4: x,w 为 BLACK, 且 w 右孩子 RED
+         color[p[x]] <- BLACK                                        // 左旋后左子树增加一个黑结点,黑高加1
+         color[right[w]] <- BLACK                                    // 左旋后保证右子树黑高不变
+         LEFT-ROTATE(T,p[x]])                                        // 左旋为 左子树 增加一个结点, 即为原来的 p[x]
+         x <- root[T]                                                // 到这一步,已完成调整,可以结束循环
 color[x] <- BLACK  
       
 ```
