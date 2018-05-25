@@ -208,3 +208,9 @@ https://www.cnblogs.com/niulina/p/5699031.html
 toLocaleString() 在处理 Date 类型的数据后, 会产生 形如 2016/7/23 下午 4:09:00 的字符串,根据地区不同产生不同字符串
 toLocaleString() 在处理 Number 类型的数据后, 会产生 形如 1,234,567,890 的字符串, 自动加逗号
 
+# 9 java properties
+https://www.cnblogs.com/hafiz/p/5876243.html
+
+# 10 内存堆栈与数据结构堆栈
+http://www.cnblogs.com/lln7777/archive/2012/03/14/2396164.html
+
