@@ -1,4 +1,4 @@
-# 1 图算法
+# 1 图的基本算法
 
 图 G = (V, E)   |V| 顶点数   |E| 边数  
 
@@ -129,6 +129,29 @@ compute GT(G的转置)
 call DFS(GT). but in the main loop of DFS, consider the vertices in order of decreasing f[u](as computed in first line)
 output the vertices of each tree in the depth-first forest formed in line 3 as a separate strongly connected component
 ```
+
+性质:  
+
+
+
+# 2 最小生成树  
+
+无向连通图 G=(V,E), 每条边都有一个权值 w(u,v), 找出一个无回路边子集 T, 连接了所有顶点, 且其权值之和 w(T) 最小.  
+
+
+# 3 单源最短路径  
+
+带权有向图 G=(V,E), 加权函数 w: E->R 为从边到实型权值的映射, 路径 p 的权 w(p) 是其组成边的所有权值之和.
+
+
+
+
+
+
+
+
+
+
 
 
 
